@@ -10,6 +10,11 @@ namespace WebApplication1.Controllers.Api
     [RoutePrefix("api/list")]
     public class ListApiController : ApiController
     {
+        private IListsService _ListsService;
 
+        public ListsApiController(IListsService ListsService)
+        {
+            _ListsService = ListsService;
+        }
     }
 }
