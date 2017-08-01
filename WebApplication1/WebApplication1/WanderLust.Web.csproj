@@ -229,6 +229,8 @@
     <Compile Include="Models\Requests\WishCreateRequest.cs" />
     <Compile Include="Models\Requests\WishUpdateRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BaseService.cs" />
+    <Compile Include="Services\WishListService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -302,6 +304,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\Responses\" />
+    <Folder Include="Models\ViewModels\" />
     <Folder Include="Views\Lists\" />
     <Folder Include="Views\WishList\" />
   </ItemGroup>
