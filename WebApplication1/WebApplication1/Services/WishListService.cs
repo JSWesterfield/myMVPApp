@@ -4,20 +4,16 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using WebApplication1.Models;
 using WebApplication1.Models.Requests;
+using WikiDataProvider.Data.Extensions;
 
 namespace WebApplication1.Services
 {
     public class WishListService : BaseService
     {
-        public SupportRequestsService(IUsersService usersService, IMessagingService messagingService)
-        {
-            _messagingService = messagingService;
-            _usersService = usersService;
-        }
-
         //CREATE
-        public int CreateSupportRequest(WishCreateRequest model)
+        public int Create(WishCreateRequest model)
         {
 
             int id = 0;
@@ -27,7 +23,7 @@ namespace WebApplication1.Services
                 parameters.AddWithValue("@location", model.Location);
                 parameters.AddWithValue("@userId", User.Identity.GetId() ?? (object)DBNull.Value);
                 parameters.AddWithValue("@activity", model.Activity);
-                parameters.AddWithValue("@image", model.Image);
+                parameters.AddWithValue("@image", model.ImageUrl);
 
                 SqlParameter idParam = new SqlParameter("@Id", id);
                 idParam.Direction = ParameterDirection.Output;
@@ -39,34 +35,34 @@ namespace WebApplication1.Services
                 id = (int)parameters["@Id"].Value;
             };
 
-            DataProvider.ExecuteNonQuery(GetConnection, "dbo.SupportRequests_Insert", inputMapper, returnMapper);
+            DataProvider.ExecuteNonQuery(GetConnection, "dbo.", inputMapper, returnMapper);
 
             return id;
         }
 
-        //UPDATE
 
-        public void UpdateSupportRequest(SupportRequestUpdateRequest model)
+        //UPDATE
+        public void Update(WishUpdateRequest model)
         {
 
             Action<SqlParameterCollection> inputMapper = delegate (SqlParameterCollection parameters)
             {
                 parameters.AddWithValue("@id", model.Id);
-                parameters.AddWithValue("@subject", model.Subject);
-                parameters.AddWithValue("@email", model.Email ?? (object)DBNull.Value);
-                parameters.AddWithValue("@body", model.Body);
-                parameters.AddWithValue("@userId", User.Identity.GetId() ?? (object)DBNull.Value);
+                parameters.AddWithValue("@location", model.Location);
+                parameters.AddWithValue("@userId", model.UserId ?? (object)DBNull.Value);
+                parameters.AddWithValue("@activity", model.Activity);
+                parameters.AddWithValue("@imageUrl", model.ImageUrl);
             };
 
-            DataProvider.ExecuteNonQuery(GetConnection, "dbo.SupportRequests_Update", inputMapper);
+            DataProvider.ExecuteNonQuery(GetConnection, "dbo.WanderLustFeature_Update", inputMapper);
         }
 
-        //GET ALL
 
-        public List<SupportRequest> GetAll()
+        //GET ALL
+        public List<Wish> GetAll()
         {
 
-            List<SupportRequest> list = null;
+            List<Wish> list = null;
 
             Action<SqlParameterCollection> inputMapper = delegate (SqlParameterCollection parameters)
             {
@@ -75,27 +71,26 @@ namespace WebApplication1.Services
 
             Action<IDataReader, short> resultMapper = delegate (IDataReader reader, short set)
             {
-                SupportRequest testSR = SupportRequestReader(reader);
+                Wish testSR = WishReader(reader);
 
                 if (list == null)
                 {
-                    list = new List<SupportRequest>();
+                    list = new List<Wish>();
                 }
 
                 list.Add(testSR);
             };
 
-            DataProvider.ExecuteCmd(GetConnection, "dbo.SupportRequests_SelectAll", inputMapper, resultMapper);
+            DataProvider.ExecuteCmd(GetConnection, "dbo.WanderLustFeature_SelectAll", inputMapper, resultMapper);
 
             return list;
         }
 
+
         //GET BY ID
-
-        public SupportRequest GetById(int id)
+        public Wish GetById(int id)
         {
-
-            SupportRequest testSR = null;
+            Wish modelWish = null;
 
             Action<SqlParameterCollection> inputMapper = delegate (SqlParameterCollection parameters)
             {
@@ -104,28 +99,25 @@ namespace WebApplication1.Services
 
             Action<IDataReader, short> resultMapper = delegate (IDataReader reader, short set)
             {
-                testSR = SupportRequestReader(reader);
+                modelWish = WishReader(reader);
             };
 
-            DataProvider.ExecuteCmd(GetConnection, "dbo.SupportRequests_SelectById", inputMapper, resultMapper);
+            DataProvider.ExecuteCmd(GetConnection, "dbo.WanderLustFeature_SelectById", inputMapper, resultMapper);
 
-            return testSR;
+            return modelWish;
         }
 
-        //SUPPORT REQUEST READER FOR GET CALLS
-
-        private SupportRequest SupportRequestReader(IDataReader reader)
+        //WISH READER FOR GET CALLS
+        private Wish WishReader(IDataReader reader)
         {
-            SupportRequest model = new SupportRequest();
+            Wish model = new Wish();
 
             int index = 0;
             model.Id = reader.GetInt32(index++);
-            model.Subject = reader.GetString(index++);
-            model.Email = reader.GetSafeString(index++);
-            model.Body = reader.GetString(index++);
-            model.Response = reader.GetSafeString(index++);
-            model.AdminUserId = reader.GetSafeInt32Nullable(index++);
-            model.UserId = reader.GetSafeInt32Nullable(index++);
+            model.Location = reader.GetSafeString(index++);
+            model.UserId = reader.GetSafeString(index++);
+            model.Activity = reader.GetSafeString(index++);
+            model.ImageUrl = reader.GetSafeString(index++);
             model.DateCreated = reader.GetDateTime(index++);
             model.DateModified = reader.GetDateTime(index++);
 
@@ -133,39 +125,16 @@ namespace WebApplication1.Services
         }
 
 
-        //UPDATE RESPONSE FROM ADMIN USER
-        public void UpdateResponse(UpdateSupportRequestResponseRequest model)
+        //DELETE
+        public void Delete(int id)
         {
             Action<SqlParameterCollection> inputMapper = delegate (SqlParameterCollection parameters)
             {
-                parameters.AddWithValue("@id", model.Id);
-                parameters.AddWithValue("@response", model.Response);
-                parameters.AddWithValue("@adminUserId", User.Identity.GetId().Value);
+                parameters.AddWithValue("@id", id);
             };
 
-            DataProvider.ExecuteNonQuery(
-                GetConnection,
-                "dbo.SupportRequests_UpdateResponse",
-                inputMapper
-                );
-
-            SupportRequest supportRequest = GetById(model.Id);
-
-            String email = supportRequest.Email;
-
-            if (supportRequest.Email == null)
-            {
-
-                User user = _usersService.GetById(supportRequest.UserId.Value);
-
-
-                email = user.Email;
-            }
-
-            _messagingService.SendSupportRequestEmail(email, supportRequest.Subject, supportRequest.Response);
-
-            //return;
-            //do not need return if i'm getting nothing back and it's the last line.
+            DataProvider.ExecuteNonQuery(GetConnection, "dbo.WanderLustFeature_Delete", inputMapper);
         }
+
     }
 }

@@ -22,7 +22,7 @@ namespace WebApplication1.Models.Requests
 
         [Required]
         [MaxLength(300)]
-        public string Image { get; set; }
+        public string ImageUrl { get; set; }
     }
 
 }
