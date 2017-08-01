@@ -1,0 +1,3 @@
+C:\myApp\WebApplication1\WebApplication1\obj\Debug\WanderLust.Web.csprojResolveAssemblyReference.cache
+C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
+C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
