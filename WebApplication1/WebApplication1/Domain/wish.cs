@@ -5,7 +5,7 @@ using System.Web;
 
 namespace WebApplication1.Models
 {
-    public class wish
+    public class Wish
     {
         public string Location { get; set; }
 
