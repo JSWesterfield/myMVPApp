@@ -1,3 +1,3 @@
 # myMVPApp
-# Renamed 'WishList'
+# Renamed 'WanderLust'
 MVP example for the client
