@@ -6,7 +6,7 @@ using System.Web;
 
 namespace WebApplication1.Models.Requests
 {
-    public class WishUpdateCreate
+    public class WishUpdateRequest: WishCreateRequest
     {
         [Required]
         public int Id { get; set; }
