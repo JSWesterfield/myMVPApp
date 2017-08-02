@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using WikiWebStarter.Example.Models;
+using WikiWebStarter.Example.Services;
 using WikiWebStarter.Web.Models.Responses;
 
 namespace WikiWebStarter.Example.Controllers.Api
 {
-    [Route("api/people")]
+    [Route("api/wish")]
     public class PeopleApiController : ApiController
     {
         // GET api/<controller>
@@ -27,6 +29,7 @@ namespace WikiWebStarter.Example.Controllers.Api
             }
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
+        
 
         // GET api/<controller>/5
         public string Get(int id)
@@ -52,6 +55,7 @@ namespace WikiWebStarter.Example.Controllers.Api
             }
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
+
 
         [HttpPut]
         public HttpResponseMessage Put(Person model)

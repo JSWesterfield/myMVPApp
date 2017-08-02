@@ -20,11 +20,68 @@ namespace WikiWebStarter.Example.Services
                 inputParamMapper: null,
                 map: delegate (IDataReader reader, short set)
                 {
-                    Person p = MapPerson(reader);
+                    Person p = MapPerson(reader, 0);
                     people.Add(p);
                 });
             return people;
         }
+   
+
+        //INSERT
+        public int Insert(Person p)
+        {
+            int i = 0;
+            DataProvider.ExecuteNonQuery(
+                GetConnection,
+                "WanderLustFeature_Insert",
+                inputParamMapper: delegate (SqlParameterCollection paramCollection)
+                {
+                    paramCollection.AddWithValue("@UserId", p.UserId);
+                    paramCollection.AddWithValue("@Location", p.Location);
+                    paramCollection.AddWithValue("@Activity", p.Activity);
+                    paramCollection.AddWithValue("@ImageUrl", p.ImageUrl);
+
+                    SqlParameter parm = new SqlParameter("@Id", SqlDbType.Int);
+                    parm.Direction = ParameterDirection.Output;
+                    paramCollection.Add(parm);
+                },
+                returnParameters: delegate (SqlParameterCollection paramCollection)
+                {
+                    int.TryParse(paramCollection["@Id"].Value.ToString(), out i);
+                });
+            return i;
+        }
+
+
+        //UPDATE
+        public void Update(Person p)
+        {
+            DataProvider.ExecuteNonQuery(
+                GetConnection,
+                "WanderLustFeature_Update",
+                inputParamMapper: delegate (SqlParameterCollection paramCollection) {
+                    paramCollection.AddWithValue("@Id", p.Id);
+                    paramCollection.AddWithValue("@UserId", p.UserId);
+                    paramCollection.AddWithValue("@Location", p.Location);
+                    paramCollection.AddWithValue("@Activity", p.Activity);
+                    paramCollection.AddWithValue("@ImageUrl", p.Location);
+                },
+                returnParameters: null);
+        }
+
+
+        //DELETE BY ID
+        public void Delete(int id)
+        {
+            DataProvider.ExecuteNonQuery(
+                GetConnection,
+                "WanderLustFeature_DeleteById",
+                inputParamMapper: delegate (SqlParameterCollection paramCollection) {
+                    paramCollection.AddWithValue("@Id", id);
+                },
+                returnParameters: null);
+        }
+
 
         //GET BY ID
         public Person GetById(int id)
@@ -49,76 +106,21 @@ namespace WikiWebStarter.Example.Services
             );
             return newPerson;
         }
-   
-
-        //INSERT
-        public int Insert(Person p)
-        {
-            int i = 0;
-            DataProvider.ExecuteNonQuery(
-                GetConnection,
-                "WanderLustFeature_Insert",
-                inputParamMapper: delegate (SqlParameterCollection paramCollection)
-                {
-                    paramCollection.AddWithValue("@FirstName", p.FirstName);
-                    paramCollection.AddWithValue("@LastName", p.LastName);
-
-                    if (p.MiddleInitial.HasValue)
-                        paramCollection.AddWithValue("@MiddleInitial", p.MiddleInitial.Value);
-
-                    SqlParameter parm = new SqlParameter("@Id", SqlDbType.Int);
-                    parm.Direction = ParameterDirection.Output;
-                    paramCollection.Add(parm);
-                },
-                returnParameters: delegate (SqlParameterCollection paramCollection)
-                {
-                    int.TryParse(paramCollection["@Id"].Value.ToString(), out i);
-                });
-            return i;
-        }
 
 
-        //UPDATE
-        public void Update(Person p)
-        {
-            DataProvider.ExecuteNonQuery(
-                GetConnection,
-                "WanderLustFeature_Update",
-                inputParamMapper: delegate (SqlParameterCollection paramCollection) {
-                    paramCollection.AddWithValue("@Id", p.Id);
-                    paramCollection.AddWithValue("@FirstName", p.FirstName);
-                    paramCollection.AddWithValue("@LastName", p.LastName);
-
-                    if (p.MiddleInitial.HasValue)
-                        paramCollection.AddWithValue("@MiddleInitial", p.MiddleInitial.Value);
-                },
-                returnParameters: null);
-        }
-
-
-        //DELETE BY ID
-        public void Delete(int id)
-        {
-            DataProvider.ExecuteNonQuery(
-                GetConnection,
-                "WanderLustFeature_DeleteById",
-                inputParamMapper: delegate (SqlParameterCollection paramCollection) {
-                    paramCollection.AddWithValue("@Id", id);
-                },
-                returnParameters: null);
-        }
-
-        private Person MapPerson(IDataReader reader)
+        private Person MapPerson(IDataReader reader, int startingIndex)
         {
             Person p = new Person();
-            int startingIndex = 0;
-            p.Id = reader.GetSafeInt32(startingIndex++);
-            p.FirstName = reader.GetSafeString(startingIndex++);
-            p.LastName = reader.GetSafeString(startingIndex++);
+            //int startingIndex = 0;
+            p.Id = reader.GetInt32(startingIndex++);
+            p.UserId = reader.GetSafeString(startingIndex++);
+            p.Location = reader.GetSafeString(startingIndex++);
+            p.Activity = reader.GetSafeString(startingIndex++);
+            p.ImageUrl = reader.GetSafeString(startingIndex++);
 
-            string s = reader.GetSafeString(startingIndex++);
-            if (!string.IsNullOrWhiteSpace(s))
-                p.MiddleInitial = s[0];
+            //string s = reader.GetSafeString(startingIndex++);
+            //if (!string.IsNullOrWhiteSpace(s))
+            //    p.UserId = s[0];
 
             return p;
         }
