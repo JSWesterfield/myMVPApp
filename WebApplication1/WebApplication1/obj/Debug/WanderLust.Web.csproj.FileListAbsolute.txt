@@ -1,6 +1,3 @@
-C:\myApp\WebApplication1\WebApplication1\obj\Debug\WanderLust.Web.csprojResolveAssemblyReference.cache
-C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
-C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
 C:\myApp\WebApplication1\WebApplication1\bin\ApplicationInsights.config
 C:\myApp\WebApplication1\WebApplication1\bin\roslyn\csc.exe
 C:\myApp\WebApplication1\WebApplication1\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
@@ -88,3 +85,5 @@ C:\myApp\WebApplication1\WebApplication1\bin\Microsoft.Owin.Security.OAuth.xml
 C:\myApp\WebApplication1\WebApplication1\bin\Microsoft.Owin.Security.Google.xml
 C:\myApp\WebApplication1\WebApplication1\bin\Microsoft.Owin.Security.Twitter.xml
 C:\myApp\WebApplication1\WebApplication1\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
+C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
