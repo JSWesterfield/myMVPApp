@@ -3,30 +3,276 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<article class="article gradient-2">
+    <h2 class="title container text-center">Welcome to WanderLust</h2>
+    <section class="form-section text-center">
+        <div class="section-inner container">
+            <div class="row">
+                <!-- wish Form -->
+                <div class="form-container col-md-10 col-sm-12 col-xs-12 col-md-push-1 col-sm-push-0 col-xs-push-0" ng-controller="mainController as main">
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+                    <form name="main.wishForm" novalidate>
+                        <div class="contact-form-inner">
+                            <h3 class="subtitle"> Create a New Wish</h3>
+                            <div class="row">
+                                <!-- With Location -->
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group" ng-class="{'has-error' : main.wishForm.wishLocation.$invalid && main.wishForm.$submitted}">
+                                    <label for="wishLocation">Wish Location</label>
+
+                                    <input required ng-model="main.wishLocation" type="text" name="wishLocation" class="form-control" placeholder="wish Title" autofocus>                       
+                                </div>
+
+                                <!-- wish Instructions-->
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group" ng-class="{'has-error' : main.wishForm.wishActivity.$invalid && main.wishForm.$submitted}">
+                                    <label for="wishActivity">Wish Activity</label>
+
+                                    <input required ng-model="main.wishActivity" type="text" name="wishActivity" class="form-control" placeholder="wish Activity">
+                                </div>
+
+                                <!-- FILE UPLOAD SECTION -->
+                                <!--wish Image URL -->
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group" ng-class="{'has-error' : main.wishForm.wishImageUrl.$invalid && main.wishForm.$submitted}">
+                                    <label for="wishImageUrl">Wish Image Url</label>
+
+                                    <input required ng-model="main.wishImageUrl" type="URL" name="wishImageUrl" class="form-control" placeholder="wish Image Url">
+                                </div>
+
+                               <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                        <label class="input-file" for="wishImageUrl">Wish Picture</label>
+                                    </div>
+                                        
+                                    <div ng-include="'/Scripts/app_fileUpload/FileUploadTemplate.html"></div>
+                                </div>
+
+                                <!-- END OF FILE UPLOAD SECTION -->
+                                
+                                <!-- SUBMIT BUTTON -->
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                    <!--Submit button will only work when wishForm's validation is satisfied, or when all inputs that have required condition inside them is met, ng-disabled directive disables the submit button until wishForm is valid as an added precaution-->
+                                    <button ng-click="main.submitwishForm(main.wishForm.$valid)" type="submit" class="btn btn-block btn-cta btn-cta-primary">Submit</button>
+                                </div>
+
+                            </div><!--//row-->
+                        </div>
+                    </form><!--//contact-form-->
+                </div><!--//form-container-->
+            </div><!--//row-->
+        </div><!--//section-inner-->
+    </section><!--//promo-section-->
+</article>
+
+@section scripts
+{
+    <script src="~/Scripts/app_fileUpload/FileUploadController.js"></script>
+    <script src="~/Scripts/app/directives/files-model.js"></script>
+    <script src="~/Scripts/sabio/services/sabio.services.artists.js"></script>
+    <script src="~/Scripts/sabio/Services/sabio.services.artworks.js"></script>
+    <script src="~/Scripts/sabio/services/sabio.services.uploads.js"></script>
+    <script src="~/Scripts/sabio/services/sabio.services.locations.js"></script>
+    <script type="text/javascript">
+        (function () {
+            "use strict";
+
+            angular.module(APPNAME)
+                .controller('mainController', MainController);
+
+            MainController.$inject = ['$scope', '$baseController', 'artworksService', 'notificationsService', 'appConfig','uploadsService',];
+
+            function MainController($scope, $baseController, artworksService, notificationsService, appConfig, uploadsService) {
+
+                var vm = this;
+                //vm.artworkImageUrlUpload = null;
+                vm.fileUpload = null;
+
+                vm.notificationsService = notificationsService;
+                vm.artworksService = artworksService;
+                vm.$scope = $scope;
+                //on submission this function should execute
+                vm.createArtwork = _createArtwork;
+                vm.onFileUploadCreateSuccess = _onFileUploadCreateSuccess;
+                vm.uploadsService = uploadsService;
+                vm.onCreateArtworkError = _onCreateArtworkError;
+                vm.onCreateArtworkSuccess = _onCreateArtworkSuccess;
+                vm.locationId = appConfig.locationId;
+                vm.readArtworkForm = readArtworkForm;
+                vm.data = null;
+                //vm.artworkData = artworkData;
+                vm.artworkImageUrl = null;
+                //set the default image displayed to the default mona lisa image
+                //var defaultImageUrl = '/Content/default.svg'
+                vm.submitArtworkForm = _submitArtworkForm;
+
+                //FORM inputs
+                vm.artworkTitle = null
+                vm.artworkArtistId = null
+                vm.artWorkInstructions = null;
+                vm.artworkClue = null;
+                vm.artworkPointValue = null;
+                vm.artworkFunFact = null;
+                vm.artworkReadMore = null;
+                //vm.locationId = response.item.locationId; //locationId is already declare and intialized to appConfig on startup.
+                //vm.artworkImageUrl = null     //already declared and initialized to a null value above
+
+                //watches for the on click, execute the _render function
+                //$scope.$on('$includeContentLoaded', _render);
+                //$scope.$on('fileUpload.urlAvailable', _urlReceived);
+
+                $baseController.merge(vm, $baseController);
+
+                _render();
+
+                //1. RENDER FORM
+                function _render() {
+                    //show page started up
+                    vm.$log.log('Page started Up');
+                    //show the the default fileupload prior to the user uploading
+                    //$scope.$broadcast('fileUpload.urlLoad', { url: null, defaultPreviewUrl: defaultImageUrl });
+
+                    vm.$log.log(appConfig);
+
+                    //in render add if check
+                    if (appConfig.artworkId == null) {
+                        vm.$log.log("This is no appConfig value, send to what URL page?");
+
+                        vm.artworkId = appConfig.item;
+                    }
+
+                    else {
+                        vm.$log.log("There is a value, we hit /admin/artworks/{id}/edit, now what?");
+
+                        //get by id function w/ success and error
+                        vm.artworksService.getById(vm.data, _onGetArtworkSuccess, _onGetArtworkError);
+                    }
+                }
+
+                // 1a. SUBMIT ARTWORK FORM - Verifies that form is valid
+                function _submitArtworkForm(isValid) {
+                    if (isValid) {
+                        vm.createArtwork();
+                    }
+
+                    else {
+                        vm.$log.log('invalid artwork data');
+                    }
+                }
+
+                //2. READ FORM
+                //create variable that contains the data from from form(artworkForm), CREATE vm.artworkData
+                function readArtworkForm() {
+                    if (vm.artworkForm.$valid) {
+                        if (vm.artworkId == null) {
+                            vm.artworkData = {
+                                Title: vm.artworkTitle
+                                , ArtistId: vm.artworkArtistId
+                                , Instructions: vm.artWorkInstructions
+                                , Clue: vm.artworkClue
+                                , PointValue: vm.artworkPointValue
+                                , FunFact: vm.artworkFunFact
+                                , ReadMore: vm.artworkReadMore
+                                , locationId: appConfig.locationId
+                                , ImageUrl: vm.artworkImageUrl
+                                //, artworkImageUrl: artworkImageUrl.url
+                            }
+                        }
+                        else {
+                            //pre-populate form if artworkId exists.
+                            //if(vm.artworkId != null)
+                        }
+                        return vm.artworkData;
+                    }
+                }
+
+                //3. createArtwork function
+                function _createArtwork() {
+                    //immediate validation for picture upload, change to on submission check for if(vm.artworkImageUrl == null)
+                    if (vm.artworkImageUrl == null) {
+                        vm.notificationsService.error('No image file was selected');
+                        vm.$log.log("error, artworkImageUrl is null");
+                    } else {
+                        //if the artworkForm is valid and the artworkImageUrl is not undefined
+                        if (vm.artworkForm.$valid && vm.artworkImageUrl) {
+                            vm.notificationsService.success('turning artworkImageUrl to vm.fileUpload');
+                            vm.$log.log('success, turning artworkImageUrl to vm.fileUpload');
+                            vm.fileUpload = vm.artworkImageUrl;
+
+                            if (vm.fileUpload != null) {
+                                vm.notificationsService.success('You uploaded an image!');
+                                vm.$log.log('success,fileUpload value exists');
+                            }
+                            //read & create the artwork
+                            _onFileUploadCreateSuccess()
+                            //vm.uploadsService.create(vm.fileUpload, _onFileUploadCreateSuccess, _onFileUploadCreateError);
+
+                        } else {
+                            vm.$log.log('invalid form data');
+                        }
+                    }
+                };
+
+                //4. onFileUploadCreateSuccess function to create an artwork after the success of the file upload
+                //function _onFileUploadCreateSuccess(response) {
+                function _onFileUploadCreateSuccess() {
+                    // create var called imageUrlUpload set to response.item.
+                    //vm.artworkImageUrlUpload = response.item;
+
+                    vm.data = vm.readArtworkForm();
+                    vm.data.locationId = appConfig.locationId;
+                    //vm.data.artworkImageUrl = response.item;
+                    vm.notificationsService.success("Your artwork was sent!");
+                    vm.artworksService.create(vm.data, _onCreateArtworkSuccess, _onCreateArtworkError);
+                }
+
+                //6. on create artwork success...
+                function _onCreateArtworkSuccess(response) {
+                    vm.$log.log("Success!");
+                    vm.locationId = appConfig.locationId;
+                    if (vm.locationId != null) {
+                        vm.locationId = appConfig.locationId;
+                    }
+                    vm.notificationsService.redirectDialog('/admin/artworks/create?locationId=' + vm.locationId, 'You have created a new artwork.');
+                };
+
+                //7. on create artwork error...
+                function _onCreateArtworkError(response) {
+                    vm.$log.log("Error");
+                    vm.notificationsService.error('There was an error creating the artwork.');
+                };
+
+                //8. onGetByIdSuccess...
+                function _onGetArtworkSuccess(response) {
+                    if (response.item == null) {
+                        vm.notificationsService.error("I'm sorry, artwork doesn't exist, you'll have to create an artwork.");
+                    }
+                    vm.$log.log("getById Success!");
+                    vm.$log.log(response.item);
+
+                    //POPULATE FORM
+                    vm.artworkTitle = response.item.Title;
+                    vm.artworkArtistId = response.item.ArtistId;
+                    vm.artWorkInstructions = response.item.Instructions;
+                    vm.artworkClue = response.item.Clue;
+                    vm.artworkPointValue = response.item.PointValue;
+                    vm.artworkFunFact = response.item.FunFact;
+                    vm.artworkReadMore = response.item.ReadMore;
+                    vm.artworkImageUrl = response.item.ImageUrl;
+                    vm.$log.log("Got artwork info");
+
+                    //Set locationId
+                    //1. first initialize the locationID to response.item.locationId
+                    vm.locationId = response.item.locationId;
+
+                    //2. Then invoke the getById method from locationsService object, passing in the int locationId and success and error callback functions
+                    //vm.locationsServices.getById(vm.locationId, _onGetLocationSucces, _onGetLocationError)
+                };
+
+
+
+                //9. on getById artwork error...
+                function _onGetArtworkError(response) {
+                    vm.$log.log("getById Error!");
+                };
+            }
+        })();
+    </script>
+}

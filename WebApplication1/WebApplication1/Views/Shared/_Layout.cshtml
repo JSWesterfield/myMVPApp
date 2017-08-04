@@ -23,23 +23,7 @@
 
 </head>
 <body>
-    <!--Other Nav bar--->
-    <!-- Nav -->
-    @*<nav id="nav">
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li>
-                <a href="#">Dropdown</a>
-                <ul>
-                    
-                </ul>
-            </li>
-            <li><a href="left-sidebar.html">Left Sidebar</a></li>
-            <li><a href="right-sidebar.html">Right Sidebar</a></li>
-            <li><a href="no-sidebar.html">No Sidebar</a></li>
-        </ul>
-    </nav>*@
-    <!--END of Other nav bar-->
+
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -57,16 +41,7 @@
                     <li>@Html.ActionLink("News", "Index", "News", new { area = "" }, null)</a></li>
                     <li>@Html.ActionLink("Blog", "Index", "Blog", new { area = "" }, null)</a></li>
                     <li>@Html.ActionLink("Contact", "Index", "Contact", new { area = "" }, null)</a></li>
-                    <li>
-                        <a href="#">And a submenu &hellip;</a>
-                        <ul>
-                            @*<li><a href="#">Lorem ipsum dolor</a></li>
-                            <li><a href="#">Phasellus consequat</a></li>
-                            <li><a href="#">Magna phasellus</a></li>
-                            <li><a href="#">Etiam dolore nisl</a></li>*@
-                        </ul>
-                    </li>
-                    <li><a href="#">Veroeros feugiat</a></li>
+                    <li><a href="#">Login In</a></li>
                 </ul>
             </div>
         </div>
@@ -86,7 +61,6 @@
     @Scripts.Render("~/Scripts/angular-animate.js")
 
     @RenderSection("scripts", required: false)
-
 
 
 </body>

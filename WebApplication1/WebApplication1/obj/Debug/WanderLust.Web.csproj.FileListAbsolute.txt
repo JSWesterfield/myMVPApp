@@ -87,3 +87,4 @@ C:\myApp\WebApplication1\WebApplication1\bin\Microsoft.Owin.Security.Twitter.xml
 C:\myApp\WebApplication1\WebApplication1\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
 C:\myApp\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
+C:\myApp\WebApplication1\WebApplication1\obj\Debug\WanderLust.Web.csprojResolveAssemblyReference.cache

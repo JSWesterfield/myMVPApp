@@ -8,7 +8,7 @@ namespace WebApplication1.Controllers
 {
     public class PeopleController : Controller
     {
-        // GET: People
+        // GET: Wish
         public ActionResult Index()
         {
             return View();
