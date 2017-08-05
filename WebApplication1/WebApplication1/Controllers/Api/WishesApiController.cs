@@ -10,18 +10,18 @@ using WikiWebStarter.Web.Models.Responses;
 namespace WikiWebStarter.Example.Controllers.Api
 {
     [Route("api/wish")]
-    public class PeopleApiController : ApiController
+    public class WishesApiController : ApiController
     {
         // GET api/<controller>
         [HttpGet]
         public HttpResponseMessage Get()
         {
-            ItemsResponse<Person> response = new ItemsResponse<Person>();
+            ItemsResponse<Wish> response = new ItemsResponse<Wish>();
             try
             {
-                PeopleService svc = new PeopleService();
-                List<Person> people = svc.SelectAll();
-                response.Items = people;
+                WishesService svc = new WishesService();
+                List<Wish> wishes = svc.SelectAll();
+                response.Items = wishes;
             }
             catch (Exception ex)
             {
@@ -38,7 +38,7 @@ namespace WikiWebStarter.Example.Controllers.Api
         }
 
         [HttpPost]
-        public HttpResponseMessage Post(Person model)
+        public HttpResponseMessage Post(Wish model)
         {
             if (!ModelState.IsValid)
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
@@ -46,7 +46,7 @@ namespace WikiWebStarter.Example.Controllers.Api
             ItemResponse<int> response = new ItemResponse<int>();
             try
             {
-                PeopleService svc = new PeopleService();
+                WishesService svc = new WishesService();
                 response.Item = svc.Insert(model);
             }
             catch (Exception ex)
@@ -58,14 +58,14 @@ namespace WikiWebStarter.Example.Controllers.Api
 
 
         [HttpPut]
-        public HttpResponseMessage Put(Person model)
+        public HttpResponseMessage Put(Wish model)
         {
             if (!ModelState.IsValid)
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ModelState);
 
             try
             {
-                PeopleService svc = new PeopleService();
+                WishesService svc = new WishesService();
                 svc.Update(model);
             }
             catch (Exception ex)
@@ -80,7 +80,7 @@ namespace WikiWebStarter.Example.Controllers.Api
         {
             try
             {
-                PeopleService svc = new PeopleService();
+                WishesService svc = new WishesService();
                 svc.Delete(id);
             }
             catch (Exception ex)

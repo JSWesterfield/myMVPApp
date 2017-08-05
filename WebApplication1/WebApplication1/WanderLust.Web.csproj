@@ -219,7 +219,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
-    <Compile Include="Domain\Person.cs" />
+    <Compile Include="Domain\Wish.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -297,15 +297,15 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\People\Index.cshtml" />
+    <Content Include="Views\Wish\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Wish\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\Requests\" />
     <Folder Include="Models\Responses\" />
     <Folder Include="Models\ViewModels\" />
-    <Folder Include="Views\Lists\" />
     <Folder Include="Views\WishList\" />
   </ItemGroup>
   <ItemGroup>

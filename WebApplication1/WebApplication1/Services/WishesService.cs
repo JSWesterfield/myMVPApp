@@ -8,27 +8,27 @@ using WikiWebStarter.Example.Models;
 
 namespace WikiWebStarter.Example.Services
 {
-    public class PeopleService
+    public class WishesService
     {
         //SELECT ALL        
-        public List<Person> SelectAll()
+        public List<Wish> SelectAll()
         {
-            List<Person> people = new List<Person>();
+            List<Wish> wishes = new List<Wish>();
             DataProvider.ExecuteCmd(
                 GetConnection,
                 "WanderLustFeature_SelectAll",
                 inputParamMapper: null,
                 map: delegate (IDataReader reader, short set)
                 {
-                    Person p = MapPerson(reader, 0);
-                    people.Add(p);
+                    Wish w = MapWish(reader, 0);
+                    wishes.Add(w);
                 });
-            return people;
+            return wishes;
         }
    
 
         //INSERT
-        public int Insert(Person p)
+        public int Insert(Wish p)
         {
             int i = 0;
             DataProvider.ExecuteNonQuery(
@@ -39,7 +39,6 @@ namespace WikiWebStarter.Example.Services
                     paramCollection.AddWithValue("@UserId", p.UserId);
                     paramCollection.AddWithValue("@Location", p.Location);
                     paramCollection.AddWithValue("@Activity", p.Activity);
-                    paramCollection.AddWithValue("@ImageUrl", p.ImageUrl);
 
                     SqlParameter parm = new SqlParameter("@Id", SqlDbType.Int);
                     parm.Direction = ParameterDirection.Output;
@@ -54,17 +53,16 @@ namespace WikiWebStarter.Example.Services
 
 
         //UPDATE
-        public void Update(Person p)
+        public void Update(Wish w)
         {
             DataProvider.ExecuteNonQuery(
                 GetConnection,
                 "WanderLustFeature_Update",
                 inputParamMapper: delegate (SqlParameterCollection paramCollection) {
-                    paramCollection.AddWithValue("@Id", p.Id);
-                    paramCollection.AddWithValue("@UserId", p.UserId);
-                    paramCollection.AddWithValue("@Location", p.Location);
-                    paramCollection.AddWithValue("@Activity", p.Activity);
-                    paramCollection.AddWithValue("@ImageUrl", p.Location);
+                    paramCollection.AddWithValue("@Id", w.Id);
+                    paramCollection.AddWithValue("@UserId", w.UserId);
+                    paramCollection.AddWithValue("@Location", w.Location);
+                    paramCollection.AddWithValue("@Activity", w.Activity);
                 },
                 returnParameters: null);
         }
@@ -83,9 +81,9 @@ namespace WikiWebStarter.Example.Services
         }
 
         //GET BY ID
-        public Person GetById(int id)
+        public Wish GetById(int id)
         {
-            Person newPerson = null;
+            Wish newWish = null;
 
             Action<SqlParameterCollection> inputMapper = delegate (SqlParameterCollection parameters)
             {
@@ -94,7 +92,7 @@ namespace WikiWebStarter.Example.Services
 
             Action<IDataReader, short> resultMapper = delegate (IDataReader reader, short set)
             {
-                newPerson = MapPerson(reader, 0); // pass in a startingIndex of 0
+                newWish = MapWish(reader, 0); // pass in a startingIndex of 0
             };
 
             DataProvider.ExecuteCmd(
@@ -103,25 +101,24 @@ namespace WikiWebStarter.Example.Services
                 inputMapper,
                 resultMapper
             );
-            return newPerson;
+            return newWish;
         }
 
 
-        private Person MapPerson(IDataReader reader, int startingIndex)
+        private Wish MapWish(IDataReader reader, int startingIndex)
         {
-            Person p = new Person();
+            Wish w = new Wish();
             //int startingIndex = 0;
-            p.Id = reader.GetInt32(startingIndex++);
-            p.UserId = reader.GetSafeString(startingIndex++);
-            p.Location = reader.GetSafeString(startingIndex++);
-            p.Activity = reader.GetSafeString(startingIndex++);
-            p.ImageUrl = reader.GetSafeString(startingIndex++);
+            w.Id = reader.GetInt32(startingIndex++);
+            w.UserId = reader.GetSafeString(startingIndex++);
+            w.Location = reader.GetSafeString(startingIndex++);
+            w.Activity = reader.GetSafeString(startingIndex++);
 
             //string s = reader.GetSafeString(startingIndex++);
             //if (!string.IsNullOrWhiteSpace(s))
-            //    p.UserId = s[0];
+            //    w.UserId = s[0];
 
-            return p;
+            return w;
         }
 
         // Alternatively, create a BaseService class
